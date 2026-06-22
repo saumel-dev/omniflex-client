@@ -59,7 +59,7 @@ export default function Hero() {
                         <span>Forge Your</span>
 
                         {/* Dynamic Text Box */}
-                        <span className="relative inline-block text-[#FF6B00] h-[1.15em] min-w-[220px] sm:min-w-[290px] md:min-w-[360px] text-center sm:text-left">
+                        <span className="relative inline-block text-[#FF6B00] h-[1.15em] min-w-55 sm:min-w-[290px] md:min-w-90 text-center sm:text-left">
                             <AnimatePresence mode="wait">
                                 <motion.span
                                     key={currentWordIdx}

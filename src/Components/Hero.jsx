@@ -96,7 +96,7 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto"
                 >
                     {/* Primary Button Wrapper - Glow on Hover */}
-                    <div className="relative group w-3/4 max-w-[260px] sm:w-auto sm:max-w-none">
+                    <div className="relative group w-3/4 max-w-65 sm:w-auto sm:max-w-none">
                         {/* Orange Outer Glow Layer with matching ease-out timeline */}
                         <div className="absolute -inset-1 bg-[#FF6B00] rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-all duration-500 ease-out scale-95 group-hover:scale-105 pointer-events-none" />
 
@@ -108,7 +108,7 @@ export default function Hero() {
                     </div>
 
                     {/* Secondary Button Wrapper - Glow on Hover */}
-                    <div className="relative group w-3/4 max-w-[260px] sm:w-auto sm:max-w-none">
+                    <div className="relative group w-3/4 max-w-65 sm:w-auto sm:max-w-none">
                         {/* Subtle White/Light Glow Layer with matching ease-out timeline */}
                         <div className="absolute -inset-1 bg-white rounded-xl blur-md opacity-0 group-hover:opacity-20 transition-all duration-500 ease-out scale-95 group-hover:scale-105 pointer-events-none" />
 
@@ -122,7 +122,6 @@ export default function Hero() {
                         </Button>
                     </div>
                 </motion.div>
-
             </div>
         </section>
     );

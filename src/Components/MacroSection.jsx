@@ -9,7 +9,8 @@ export default function MacroSection() {
   ];
 
   return (
-    <section className="relative w-full py-20 md:py-28 dark::bg-[#111827] text-foreground overflow-hidden px-6 transition-colors duration-300 border-t border-default-100/40">
+    // By changing the background to bg-default-50 dark:bg-[#111827], we get proper structural division in both modes!
+    <section className="relative w-full py-20 md:py-28 bg-default-50 dark:bg-[#111827] text-foreground overflow-hidden px-6 transition-colors duration-300 border-t border-default-200/60 dark:border-zinc-800/50">
       
       {/* Dynamic Structural Accent Blur Background Layers */}
       <div className="absolute top-1/4 right-0 w-[450px] h-[450px] rounded-full bg-[#FF6B00]/5 dark:bg-[#FF6B00]/5 blur-[120px] pointer-events-none z-0" />
@@ -24,11 +25,11 @@ export default function MacroSection() {
               Biometric Engine Tracker
             </span>
             
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15]">
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] text-default-900 dark:text-white">
               Crush Your Limits with <span className="text-[#FF6B00]">Engineered Nutrition.</span>
             </h2>
             
-            <p className="text-base text-default-500 font-light leading-relaxed max-w-xl">
+            <p className="text-base text-default-500 dark:text-zinc-400 font-light leading-relaxed max-w-xl">
               Workouts determine your physical stimulus; your nutrition determines your absolute performance ceiling. Use our real-time biometric tool to construct an analytical baseline for your transformation goal.
             </p>
 
@@ -39,8 +40,8 @@ export default function MacroSection() {
                     <FiCheckCircle className="w-5 h-5 stroke-[2.5]" />
                   </div>
                   <div>
-                    <h4 className="text-base font-bold text-default-800 dark:text-zinc-100">{point.title}</h4>
-                    <p className="text-sm text-default-500 font-light">{point.desc}</p>
+                    <h4 className="text-base font-bold text-default-800 dark:text-zinc-200">{point.title}</h4>
+                    <p className="text-sm text-default-500 dark:text-zinc-400 font-light">{point.desc}</p>
                   </div>
                 </div>
               ))}
@@ -49,10 +50,11 @@ export default function MacroSection() {
 
           {/* RIGHT FRAMING: The Interactive Utility Box Panel */}
           <div className="lg:col-span-6 w-full max-w-md mx-auto lg:ml-auto">
-            <div className="p-6 sm:p-8 rounded-2xl bg-default-100/60 dark:bg-white/[0.01] border border-default-200 dark:border-white/10 shadow-xl backdrop-blur-sm">
+            {/* Swapped dark background to bg-[#1f2937]/50 so it visibly stacks on top of the #111827 section layer */}
+            <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#1f2937]/50 border border-default-200 dark:border-zinc-800 shadow-xl backdrop-blur-sm">
               <div className="mb-6">
                 <h3 className="text-xl font-bold tracking-tight text-default-900 dark:text-white">Macro Target Analyzer</h3>
-                <p className="text-xs text-default-400 dark:text-zinc-500 mt-1">Adjust metric parameters to view distribution breakdowns instantly.</p>
+                <p className="text-xs text-default-500 dark:text-zinc-400 mt-1">Adjust metric parameters to view distribution breakdowns instantly.</p>
               </div>
 
               {/* Injected Interactive Elements Form */}

@@ -1,17 +1,37 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* 1. Define the dark mode theme override for Tailwind v4 */
+@theme {
+  --background-dark: #090D16;
+}
+
+/* 2. Map HeroUI / standard utility tokens to use your color when .dark is active */
+.dark {
+  --background: var(--background-dark);
+  background-color: var(--background-dark);
+}
+
+html,
 body,
 nav,
 header,
-div,
+main,
 section,
+article,
+aside,
+footer,
+div,
 button,
 a,
-input {
-    transition:
-      background-color .3s ease,
-      color .3s ease,
-      border-color .3s ease,
-      box-shadow .3s ease;
+input,
+textarea,
+svg {
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease,
+    fill 300ms ease,
+    stroke 300ms ease,
+    box-shadow 300ms ease;
 }

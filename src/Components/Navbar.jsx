@@ -1,17 +1,17 @@
 'use client'
 import { useState, useEffect } from "react";
-import { Link, Button } from "@heroui/react";
+import { Link } from "@heroui/react";
 import OmniflexLogo from "./OmniflexLogo";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes"; // Import useTheme
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "@gravity-ui/icons";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme(); // Destructure theme settings
+  const { theme, setTheme } = useTheme();
 
-  // Wait until mounted on the client to safely show the theme state
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -24,29 +24,27 @@ export default function Navbar() {
 
   const getLinkClass = (href, baseClasses = "") => {
     const isActive = pathname === href;
-    return `${baseClasses} ${
-      isActive 
-        ? "text-[#FF6B00] underline underline-offset-4 decoration-2 decoration-[#FF6B00] font-medium" 
-        : "text-foreground hover:text-[#FF6B00] no-underline"
-    }`;
+    return `${baseClasses} ${isActive
+      ? "text-[#FF6B00] underline underline-offset-4 decoration-2 decoration-[#FF6B00] font-medium"
+      : "text-foreground hover:text-[#FF6B00] no-underline"
+      }`;
   };
 
   return (
-    <nav className="relative z-40 container mx-auto bg-transparent">
-      {/* --- DESKTOP & MOBILE HEADER ROW --- */}
-      <header className="flex h-16 items-center justify-between px-6">
+    <nav className="fixed top-0 inset-x-0 z-50 w-full border-b border-default-100/40 bg-background/70 backdrop-blur-md transition-all duration-300">
+      <header className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-6">
 
         {/* Left Section: Logo */}
         <div className="flex items-center">
           <OmniflexLogo />
         </div>
 
-        {/* Center Section: Navigation Links (Desktop) */}
-        <ul className="hidden items-center gap-6 md:flex">
+        {/* Center Section: Navigation Links */}
+        <ul className="hidden items-center gap-6 md:flex text-sm">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <Link 
-                href={link.href} 
+              <Link
+                href={link.href}
                 underline="none"
                 className={getLinkClass(link.href)}
               >
@@ -57,45 +55,62 @@ export default function Navbar() {
         </ul>
 
         {/* Right Section: Theme Toggle & Actions */}
-        <div className="flex items-center gap-4">
-          
-          {/* Theme/Mode Button (Desktop) */}
-          <button 
-            aria-label="Toggle theme" 
-            className="hidden md:block p-2 text-foreground hover:opacity-80 transition-opacity"
+        <div className="flex items-center gap-4 md:gap-8">
+
+          {/* Fixed Theme Toggle Button */}
+          <button
+            aria-label="Toggle Theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="
+              flex items-center justify-center
+              h-8 w-8
+              rounded-xl
+              border border-default-200
+              bg-default-100/50
+              backdrop-blur-sm
+              hover:bg-default-200
+              hover:scale-105
+              active:scale-95
+              transition-all duration-300
+            "
           >
-            {/* Show different icons based on the active theme state */}
-            {mounted && theme === "dark" ? (
-              /* Sun Icon for Dark Mode (Switches to Light) */
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m2.828 5.657a4 4 0 118 0 4 4 0 01-8 0z" />
-              </svg>
-            ) : (
-              /* Moon Icon for Light Mode (Switches to Dark) */
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-              </svg>
-            )}
+            {/* 
+              Using transition-none! safely cuts through your global.css wildcard animation settings.
+              This prevents route changes from forcing a rotation or pulsing recalculation.
+            */}
+            <span className="flex items-center justify-center transition-none!">
+              {!mounted ? (
+                <div className="w-[15px] h-[15px] transition-none!" />
+              ) : theme === "dark" ? (
+                <Sun width={15} height={15} className="transition-none!" />
+              ) : (
+                <Moon width={15} height={15} className="transition-none!" />
+              )}
+            </span>
           </button>
 
-          {/* Desktop Right Actions */}
-          <div className="hidden items-center gap-4 md:flex">
-            <Link 
-              href="/login" 
+          {/* Desktop Action Buttons */}
+          <div className="hidden md:flex items-center gap-8 text-sm">
+            <Link
+              href="/login"
               underline="none"
               className={getLinkClass("/login")}
             >
               Login
             </Link>
-            <Button>Register</Button>
+
+            <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
+              <Link href="/register" underline="none" className="text-white no-underline hover:no-underline">
+                Register
+              </Link>
+            </button>
           </div>
 
-          {/* Mobile Menu Hamburger Trigger */}
+          {/* Mobile Hamburger Menu Button */}
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 text-foreground"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label="Toggle Menu"
           >
             {isMenuOpen ? (
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,19 +122,18 @@ export default function Navbar() {
               </svg>
             )}
           </button>
+
         </div>
       </header>
 
-      {/* --- CONTAINER DROPDOWN (Mobile) --- */}
+      {/* --- MOBILE DROPDOWN MENU --- */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 right-0 z-50 mx-4 mt-2 rounded-2xl border bg-background p-4 shadow-xl md:hidden">
-
-          {/* Mobile Navigation Links */}
-          <ul className="flex flex-col gap-1 pb-4">
+        <div className="absolute top-full left-0 right-0 z-50 mx-4 mt-2 rounded-2xl border border-default-200 bg-background/95 backdrop-blur-lg p-4 shadow-xl md:hidden">
+          <ul className="flex flex-col gap-1 pb-4 text-sm">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link 
-                  href={link.href} 
+                <Link
+                  href={link.href}
                   underline="none"
                   className={getLinkClass(link.href, "block w-full py-2.5 px-3 rounded-xl")}
                   onClick={() => setIsMenuOpen(false)}
@@ -130,32 +144,22 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* Divider line before action row */}
-          <div className="border-t my-2" />
+          <div className="border-t border-default-100 my-2" />
 
-          {/* Mobile Bottom Action Row */}
-          <div className="flex items-center justify-between pt-2 px-1">
-            <Link 
-              href="/login" 
+          <div className="flex items-center justify-between pt-2 px-1 text-sm">
+            <Link
+              href="/login"
               underline="none"
               className={getLinkClass("/login", "py-2")}
               onClick={() => setIsMenuOpen(false)}
             >
               Login
             </Link>
-            
-            {/* Mobile Theme Toggle placed cleanly near actions */}
-            <button 
-              aria-label="Toggle theme" 
-              className="p-2 border rounded-xl"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {mounted && theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
+              <Link href="/register" underline="none" className="text-white no-underline hover:no-underline" onClick={() => setIsMenuOpen(false)}>
+                Register
+              </Link>
             </button>
-
-            <Button>
-              Register
-            </Button>
           </div>
         </div>
       )}

@@ -6,8 +6,9 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="w-full bg-[#111827] text-zinc-400 border-t border-zinc-800/80 transition-colors duration-300">
-            <div className="container mx-auto max-w-6xl px-2 py-10 md:py-10">
+        // Changed bg-background to bg-white to guarantee absolute crisp white in light mode
+        <footer className="w-full bg-white dark:bg-[#111827] text-default-500 dark:text-zinc-400 border-t border-default-200/60 dark:border-zinc-800/80 transition-colors duration-300">
+            <div className="container mx-auto max-w-6xl px-4 py-10 md:py-10">
 
                 {/* Top Layout Structure Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start mb-12">
@@ -15,11 +16,11 @@ export default function Footer() {
                     {/* Column 1: Core Brand Profile */}
                     <div className="md:col-span-4 space-y-5">
                         <div className="flex items-center gap-2">
-                            <span className="text-2xl font-black tracking-wider text-white">
+                            <span className="text-2xl font-black tracking-wider text-foreground dark:text-white">
                                 OMNI<span className="text-[#FF6B00]">FLEX</span>
                             </span>
                         </div>
-                        <p className="text-sm font-light leading-relaxed max-w-sm text-zinc-400">
+                        <p className="text-sm font-light leading-relaxed max-w-sm">
                             Elevate your limits with engineering-backed training setups, targeted nutrition planning, and an elite structural support network built for performers.
                         </p>
                         {/* Social Connection Media Panels */}
@@ -33,7 +34,7 @@ export default function Footer() {
                                 <a
                                     key={idx}
                                     href={social.href}
-                                    className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-[#FF6B00] hover:border-[#FF6B00]/30 hover:bg-zinc-800/50 transition-all duration-200"
+                                    className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-default-200 dark:border-zinc-800 text-default-500 dark:text-zinc-400 hover:text-[#FF6B00] dark:hover:text-[#FF6B00] hover:border-[#FF6B00]/30 hover:bg-default-200 dark:hover:bg-zinc-800/50 transition-all duration-200"
                                 >
                                     {social.icon}
                                 </a>
@@ -43,7 +44,7 @@ export default function Footer() {
 
                     {/* Column 2: Navigation Links */}
                     <div className="md:col-span-2 space-y-4">
-                        <h4 className="text-xs font-bold tracking-widest text-white uppercase">
+                        <h4 className="text-xs font-bold tracking-widest text-foreground dark:text-white uppercase">
                             Quick Navigation
                         </h4>
                         <ul className="space-y-2.5 text-sm font-light">
@@ -54,7 +55,7 @@ export default function Footer() {
                                 { name: "Member Portal", href: "#" },
                             ].map((link, idx) => (
                                 <li key={idx}>
-                                    <a href={link.href} className="hover:text-white transition-colors duration-200">
+                                    <a href={link.href} className="hover:text-[#FF6B00] dark:hover:text-white transition-colors duration-200">
                                         {link.name}
                                     </a>
                                 </li>
@@ -64,7 +65,7 @@ export default function Footer() {
 
                     {/* Column 3: Contact Information */}
                     <div className="md:col-span-3 space-y-4">
-                        <h4 className="text-xs font-bold tracking-widest text-white uppercase">
+                        <h4 className="text-xs font-bold tracking-widest text-foreground dark:text-white uppercase">
                             Contact Desk
                         </h4>
                         <ul className="space-y-3.5 text-sm font-light">
@@ -78,7 +79,7 @@ export default function Footer() {
                             </li>
                             <li className="flex gap-3 items-center">
                                 <FiMail className="w-4 h-4 text-[#FF6B00] flex-shrink-0" />
-                                <span className="hover:text-white transition-colors duration-200 cursor-pointer">
+                                <span className="hover:text-[#FF6B00] dark:hover:text-white transition-colors duration-200 cursor-pointer">
                                     contact@omniflex.com
                                 </span>
                             </li>
@@ -87,10 +88,10 @@ export default function Footer() {
 
                     {/* Column 4: Newsletter Box Container */}
                     <div className="md:col-span-3 space-y-4">
-                        <h4 className="text-xs font-bold tracking-widest text-white uppercase">
+                        <h4 className="text-xs font-bold tracking-widest text-foreground dark:text-white uppercase">
                             Stay Updated
                         </h4>
-                        <p className="text-xs font-light leading-relaxed text-zinc-400">
+                        <p className="text-xs font-light leading-relaxed">
                             Subscribe to unlock elite workout guidelines, performance blueprints, and weekly athletic insight catalogs.
                         </p>
                         <form onSubmit={(e) => e.preventDefault()} className="space-y-2.5 pt-1">
@@ -98,7 +99,7 @@ export default function Footer() {
                                 <input
                                     type="email"
                                     placeholder="Enter email address"
-                                    className="w-full text-xs p-3.5 pr-14 rounded-xl border border-zinc-800 bg-zinc-900/60 text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]/20 transition-all"
+                                    className="w-full text-xs p-3.5 pr-14 rounded-xl border border-default-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 text-foreground dark:text-white placeholder-default-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]/20 transition-all"
                                 />
                                 <button
                                     type="submit"
@@ -113,15 +114,15 @@ export default function Footer() {
                 </div>
 
                 {/* Separator Line */}
-                <div className="w-full h-px bg-zinc-800/60 my-8" />
+                <div className="w-full h-px bg-default-200/60 dark:bg-zinc-800/60 my-8" />
 
                 {/* Bottom Section Layout */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-light">
                     <p>© {currentYear} OmniFlex Fitness. All Rights Reserved.</p>
                     <div className="flex items-center gap-6">
-                        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-white transition-colors">Support Center</a>
+                        <a href="#" className="hover:text-[#FF6B00] dark:hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-[#FF6B00] dark:hover:text-white transition-colors">Terms of Service</a>
+                        <a href="#" className="hover:text-[#FF6B00] dark:hover:text-white transition-colors">Support Center</a>
                     </div>
                 </div>
 

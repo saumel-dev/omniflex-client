@@ -16,7 +16,7 @@ export default function Hero() {
     }, []);
 
     return (
-        <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-12 md:py-20 bg-background">
+        <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-20 md:py-20 bg-background">
 
             {/* 1. BACKGROUND IMAGE WITH ACCENT OVERLAY */}
             <div

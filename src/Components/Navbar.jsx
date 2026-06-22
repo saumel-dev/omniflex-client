@@ -57,30 +57,16 @@ export default function Navbar() {
         {/* Right Section: Theme Toggle & Actions */}
         <div className="flex items-center gap-4 md:gap-8">
 
-          {/* Fixed Theme Toggle Button */}
+          {/* Fixed Theme Toggle Button without formatting breaks */}
           <button
             aria-label="Toggle Theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="
-              flex items-center justify-center
-              h-8 w-8
-              rounded-xl
-              border border-default-200
-              bg-default-100/50
-              backdrop-blur-sm
-              hover:bg-default-200
-              hover:scale-105
-              active:scale-95
-              transition-all duration-300
-            "
+            className="flex items-center justify-center h-8 w-8 rounded-xl border border-default-200 bg-default-100/50 backdrop-blur-sm hover:bg-default-200 hover:scale-105 active:scale-95 transition-all duration-300"
           >
-            {/* 
-              Using transition-none! safely cuts through your global.css wildcard animation settings.
-              This prevents route changes from forcing a rotation or pulsing recalculation.
-            */}
             <span className="flex items-center justify-center transition-none!">
+              {/* Safely handle icon mounting state to prevent internal SVG property mismatches */}
               {!mounted ? (
-                <div className="w-[15px] h-[15px] transition-none!" />
+                <div className="w-[15px] h-[15px]" />
               ) : theme === "dark" ? (
                 <Sun width={15} height={15} className="transition-none!" />
               ) : (

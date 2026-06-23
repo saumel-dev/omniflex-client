@@ -86,7 +86,7 @@ export default function Navbar() {
             </Link>
 
             <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
-              <Link href="/register" underline="none" className="text-white no-underline hover:no-underline">
+              <Link href="/signup" underline="none" className="text-white no-underline hover:no-underline">
                 Register
               </Link>
             </button>
@@ -142,7 +142,7 @@ export default function Navbar() {
               Login
             </Link>
             <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
-              <Link href="/register" underline="none" className="text-white no-underline hover:no-underline" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/signup" underline="none" className="text-white no-underline hover:no-underline" onClick={() => setIsMenuOpen(false)}>
                 Register
               </Link>
             </button>

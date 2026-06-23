@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
-import { Avatar } from "@heroui/react";
 import Link from "next/link";
 import OmniflexLogo from "./OmniflexLogo";
 import { usePathname, useRouter } from "next/navigation";
@@ -62,6 +61,8 @@ export default function Navbar() {
     });
   };
 
+  const userInitials = user?.name ? user.name.slice(0, 2).toUpperCase() : "U";
+
   return (
     <nav className="fixed top-0 inset-x-0 z-50 w-full border-b border-default-100/40 bg-background/70 backdrop-blur-md transition-all duration-300">
       <header className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-6">
@@ -77,7 +78,6 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                underline="none"
                 className={getLinkClass(link.href)}
               >
                 {link.label}
@@ -111,19 +111,24 @@ export default function Navbar() {
             {!mounted || isPending ? (
               <div className="w-8 h-8 rounded-full bg-default-200 animate-pulse" />
             ) : user ? (
-              /* --- PURE TAILWIND ABSOLUTE DROPDOWN (PREVENTS BREAKS) --- */
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center outline-none focus:outline-none transition-transform active:scale-95"
                 >
-                  <Avatar
-                    color="primary"
-                    size="sm"
-                    src={user.image || undefined}
-                    name={user.name?.slice(0, 2).toUpperCase()}
-                    className="cursor-pointer ring-2 ring-primary ring-offset-2 ring-offset-background"
-                  />
+                  {/* FIXED: Standard HTML Image/Initial Container instead of HeroUI Avatar */}
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-xs overflow-hidden border border-primary ring-2 ring-primary/20 ring-offset-2 ring-offset-background cursor-pointer">
+                    {user?.image ? (
+                      <img 
+                        src={user.image} 
+                        alt={user.name || "User"} 
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span>{userInitials}</span>
+                    )}
+                  </div>
                 </button>
 
                 {isDropdownOpen && (
@@ -134,12 +139,12 @@ export default function Navbar() {
                       <div className="flex items-center justify-between gap-2 mt-0.5">
                         <p className="text-xs text-default-400 truncate max-w-[120px]">{user.email}</p>
                         <span className="text-[10px] font-mono tracking-wider uppercase bg-primary-500/10 text-primary px-1.5 py-0.5 rounded-md font-bold">
-                          {user.role || "member"}
+                          {user.role || "user"}
                         </span>
                       </div>
                     </div>
 
-                    {/* Menu links inside drop down */}
+                    {/* Menu links inside dropdown */}
                     <Link
                       href="/dashboard"
                       onClick={() => setIsDropdownOpen(false)}
@@ -159,18 +164,16 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              /* --- DISCONNECTED SESSION LOGOUT ACTIONS --- */
               <div className="flex items-center gap-6">
                 <Link
                   href="/login"
-                  underline="none"
                   className={getLinkClass("/login")}
                 >
                   Login
                 </Link>
 
                 <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
-                  <Link href="/signup" underline="none" className="text-white no-underline hover:no-underline">
+                  <Link href="/register" className="text-white no-underline hover:no-underline">
                     Register
                   </Link>
                 </button>
@@ -205,11 +208,18 @@ export default function Navbar() {
           {/* Mobile Context Card Profile wrapper display */}
           {mounted && user && (
             <div className="flex items-center gap-3 px-3 pb-3 mb-2 border-b border-default-100">
-              <Avatar
-                size="md"
-                src={user.image || undefined}
-                name={user.name?.slice(0, 2).toUpperCase()}
-              />
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm overflow-hidden border border-primary">
+                {user?.image ? (
+                  <img 
+                    src={user.image} 
+                    alt={user.name || "User"} 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span>{userInitials}</span>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm text-foreground truncate">{user.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -227,7 +237,6 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  underline="none"
                   className={getLinkClass(link.href, "block w-full py-2.5 px-3 rounded-xl")}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -236,12 +245,10 @@ export default function Navbar() {
               </li>
             ))}
 
-            {/* Mobile-only Dashboard link context item injected inside wrapper */}
             {mounted && user && (
               <li>
                 <Link
                   href="/dashboard"
-                  underline="none"
                   className={getLinkClass("/dashboard", "block w-full py-2.5 px-3 rounded-xl")}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -255,7 +262,6 @@ export default function Navbar() {
 
           <div className="flex items-center justify-between pt-2 px-1 text-sm">
             {mounted && user ? (
-              /* Mobile Logged in Trigger action */
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-center gap-2 py-2.5 font-semibold text-xs rounded-xl bg-danger-500/10 text-danger border border-danger-500/20 active:scale-98 transition-all"
@@ -263,18 +269,16 @@ export default function Navbar() {
                 Logout <MdOutlineLogout className="text-sm" />
               </button>
             ) : (
-              /* Mobile Logged out Trigger actions */
               <>
                 <Link
                   href="/login"
-                  underline="none"
                   className={getLinkClass("/login", "py-2")}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <button className="bg-[#FF6B00] text-white font-semibold px-4 py-2 text-xs rounded-xl cursor-pointer hover:bg-[#E56000] active:scale-98 transition-all duration-200">
-                  <Link href="/register" underline="none" className="text-white no-underline hover:no-underline" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/register" className="text-white no-underline hover:no-underline" onClick={() => setIsMenuOpen(false)}>
                     Register
                   </Link>
                 </button>

@@ -1,4 +1,6 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import dns from "node:dns"
+dns.setServers(["8.8.8.8", "1.1.1.1"])
+import { Inter } from "next/font/google";
 import "../globals.css"
 import Navbar from "@/Components/Navbar";
 import { Providers } from "@/Components/Providers";

@@ -10,30 +10,66 @@ import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(""); 
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
+    setUploadStatus("");
 
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name");
     const email = formData.get("email");
-    const image = formData.get("image");
     const password = formData.get("password");
+    const imageFile = formData.get("imageFile"); 
 
+    let uploadedImageUrl = "";
+
+    // 1. Only run ImgBB uploading logic if the user picked a file
+    if (imageFile && imageFile.name) {
+      setUploadStatus("Uploading profile image to ImgBB...");
+      
+      const imgData = new FormData();
+      imgData.append("image", imageFile);
+
+      try {
+        const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, {
+          method: "POST",
+          body: imgData,
+        });
+
+        const resData = await res.json();
+
+        if (resData.success) {
+          uploadedImageUrl = resData.data.url; 
+        } else {
+          throw new Error("ImgBB file processing failed.");
+        }
+      } catch (err) {
+        setErrorMsg("Failed to upload your profile image. Please try again.");
+        setLoading(false);
+        setUploadStatus("");
+        return;
+      }
+    }
+
+    // 2. Submit the registration payload to Better-Auth using the new ImgBB URL
+    setUploadStatus("Creating your account secure profile...");
     const { data, error } = await authClient.signUp.email({
       email,
       password,
       name,
-      image: image || undefined,
+      image: uploadedImageUrl || undefined, 
       callbackURL: "/",
     });
 
     if (error) {
       setErrorMsg(error.message || "Something went wrong during registration.");
       setLoading(false);
+      setUploadStatus("");
     } else {
       router.push("/");
       router.refresh();
@@ -41,7 +77,6 @@ export default function RegisterPage() {
   };
 
   return (
-    // Centers layout completely across mobile, tablet, and desktop viewports 
     <div className="flex min-h-[90vh] w-full items-center justify-center px-4 py-12 bg-background text-foreground transition-colors duration-300">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -79,9 +114,7 @@ export default function RegisterPage() {
               variant="bordered"
               size="lg" 
               className="mt-1.5" 
-              classNames={{
-                inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
-              }}
+              className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
             <FieldError className="text-xs text-danger mt-1 font-medium" />
           </TextField>
@@ -104,28 +137,23 @@ export default function RegisterPage() {
               variant="bordered"
               size="lg" 
               className="mt-1.5" 
-              classNames={{
-                inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
-              }}
+              className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
             <FieldError className="text-xs text-danger mt-1 font-medium" />
           </TextField>
 
-          <TextField name="image" type="url" labelPlacement="outside">
-            <Label className="font-semibold text-xs tracking-wider text-default-600 uppercase">
-              Profile Image URL <span className="text-default-400 font-normal lowercase">(optional)</span>
-            </Label>
-            <Input 
-              placeholder="https://example.com/avatar.jpg" 
-              variant="bordered"
-              size="lg" 
-              className="mt-1.5" 
-              classNames={{
-                inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
-              }}
+          {/* FIXED: Using standard accessible elements to perfectly process filenames without React DOM warnings */}
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-xs tracking-wider text-default-600 uppercase">
+              Upload Profile Avatar <span className="text-default-400 font-normal lowercase">(optional)</span>
+            </label>
+            <input 
+              type="file"
+              name="imageFile"
+              accept="image/*"
+              className="h-12 w-full file:mr-4 file:py-1 file:px-3 file:h-full file:border-0 file:text-xs file:font-semibold file:bg-default-200 file:text-default-700 hover:file:bg-default-300 file:cursor-pointer rounded-xl border border-default-200 bg-transparent px-3 text-sm transition-colors duration-200 hover:border-primary focus:border-primary cursor-pointer pt-2.5"
             />
-            <FieldError className="text-xs text-danger mt-1 font-medium" />
-          </TextField>
+          </div>
 
           <TextField
             isRequired
@@ -133,7 +161,6 @@ export default function RegisterPage() {
             type="password"
             labelPlacement="outside"
             validate={(value) => {
-              // Custom client authentication validations matching requirements perfectly [cite: 123]
               if (value.length < 6) {
                 return "Password must be at least 6 characters";
               }
@@ -152,12 +179,10 @@ export default function RegisterPage() {
               variant="bordered"
               size="lg" 
               className="mt-1.5"
-              classNames={{
-                inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
-              }}
+              className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
             <Description className="text-xs text-default-400 mt-1.5 leading-relaxed block">
-              Must be at least 6 characters with 1 uppercase and 1 lowercase letter [cite: 123]
+              Must be at least 6 characters with 1 uppercase and 1 lowercase letter
             </Description>
             <FieldError className="text-xs text-danger mt-1 font-medium" />
           </TextField>
@@ -169,7 +194,7 @@ export default function RegisterPage() {
             className="w-full font-bold shadow-lg shadow-primary/20 h-12 mt-4 text-white bg-primary transition-transform active:scale-98"
             isLoading={loading}
           >
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? (uploadStatus || "Creating Account...") : "Create Account"}
           </Button>
         </Form>
       </motion.div>

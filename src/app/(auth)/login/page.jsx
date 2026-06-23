@@ -93,7 +93,7 @@ export default function LoginPage() {
               variant="bordered"
               size="lg" 
               className="mt-1.5" 
-              classNames={{
+              classnames={{
                 inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
               }}
             />
@@ -112,7 +112,7 @@ export default function LoginPage() {
               variant="bordered"
               size="lg" 
               className="mt-1.5"
-              classNames={{
+              classnames={{
                 inputWrapper: "h-12 border-default-200 hover:border-primary focus-within:!border-primary transition-colors duration-200"
               }}
             />
@@ -123,7 +123,7 @@ export default function LoginPage() {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full font-bold shadow-lg shadow-primary/20 h-12 mt-2 text-white bg-primary transition-transform active:scale-98"
+            className="w-full font-bold shadow-lg shadow-primary/20 h-12 mt-2 text-white bg-[#FF6B00] transition-transform active:scale-98"
             isLoading={loading}
           >
             {loading ? "Signing In..." : "Sign In"}
@@ -139,7 +139,7 @@ export default function LoginPage() {
         <Button
           variant="bordered"
           size="lg"
-          className="w-full font-semibold border-default-200 hover:bg-default-100 h-12 transition-all duration-200"
+          className="w-full font-semibold border-default-200 hover:bg-default-100 h-12 transition-all duration-200 bg-white text-black"
           onClick={handleGoogleLogin}
         >
           <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">

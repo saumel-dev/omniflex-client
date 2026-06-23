@@ -84,6 +84,18 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          
+          {/* FIXED: Dashboard displays here ONLY if the user is authenticated */}
+          {mounted && user && (
+            <li>
+              <Link
+                href="/dashboard"
+                className={getLinkClass("/dashboard")}
+              >
+                Dashboard
+              </Link>
+            </li>
+          )}
         </ul>
 
         {/* Right Section: Theme Toggle & Actions */}
@@ -116,7 +128,6 @@ export default function Navbar() {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center outline-none focus:outline-none transition-transform active:scale-95"
                 >
-                  {/* FIXED: Standard HTML Image/Initial Container instead of HeroUI Avatar */}
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-xs overflow-hidden border border-primary ring-2 ring-primary/20 ring-offset-2 ring-offset-background cursor-pointer">
                     {user?.image ? (
                       <img 
@@ -144,18 +155,11 @@ export default function Navbar() {
                       </div>
                     </div>
 
-                    {/* Menu links inside dropdown */}
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center w-full h-10 px-3 text-sm font-medium text-foreground rounded-xl hover:bg-default-100 transition-colors"
-                    >
-                      Dashboard
-                    </Link>
+                    {/* FIXED: Dashboard Link completely removed from here */}
 
                     <button
                       onClick={handleLogout}
-                      className="flex items-center justify-between w-full h-10 px-3 text-sm font-medium text-danger rounded-xl hover:bg-danger-500/10 transition-colors mt-0.5 text-left"
+                      className="flex items-center justify-between w-full h-10 px-3 text-sm font-medium text-danger rounded-xl hover:bg-danger-500/10 transition-colors text-left"
                     >
                       <span>Logout</span>
                       <MdOutlineLogout className="text-lg" />
@@ -225,7 +229,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-2 mt-0.5">
                   <p className="text-xs text-default-400 truncate max-w-[140px]">{user.email}</p>
                   <span className="text-[9px] bg-default-100 font-semibold px-1.5 py-0.5 rounded text-default-600 uppercase font-mono">
-                    {user.role || "member"}
+                    {user.role || "user"}
                   </span>
                 </div>
               </div>

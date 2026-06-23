@@ -23,10 +23,10 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>
         <Navbar></Navbar>
-        {children}
+        <main className="flex-1 pt-16">{children}</main>
         </Providers>
         <Footer></Footer>
       </body>

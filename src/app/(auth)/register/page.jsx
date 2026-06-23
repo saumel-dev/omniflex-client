@@ -77,7 +77,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-[90vh] w-full items-center justify-center px-4 py-12 bg-background text-foreground transition-colors duration-300">
+    <div className="flex min-h-[calc(100vh-64px)] w-full items-center justify-center px-4 py-12 bg-background text-foreground transition-colors duration-300">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}

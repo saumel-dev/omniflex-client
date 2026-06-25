@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState(""); 
+  const [uploadStatus, setUploadStatus] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleRegister = async (e) => {
@@ -23,14 +23,14 @@ export default function RegisterPage() {
     const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
-    const imageFile = formData.get("imageFile"); 
+    const imageFile = formData.get("imageFile");
 
     let uploadedImageUrl = "";
 
     // 1. Only run ImgBB uploading logic if the user picked a file
     if (imageFile && imageFile.name) {
       setUploadStatus("Uploading profile image to ImgBB...");
-      
+
       const imgData = new FormData();
       imgData.append("image", imageFile);
 
@@ -44,7 +44,7 @@ export default function RegisterPage() {
         const resData = await res.json();
 
         if (resData.success) {
-          uploadedImageUrl = resData.data.url; 
+          uploadedImageUrl = resData.data.url;
         } else {
           throw new Error("ImgBB file processing failed.");
         }
@@ -62,7 +62,7 @@ export default function RegisterPage() {
       email,
       password,
       name,
-      image: uploadedImageUrl || undefined, 
+      image: uploadedImageUrl || undefined,
       callbackURL: "/",
     });
 
@@ -85,8 +85,8 @@ export default function RegisterPage() {
         className="w-full max-w-md rounded-2xl border border-divider bg-content1/70 backdrop-blur-md p-8 shadow-2xl"
       >
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-default-500 bg-clip-text text-transparent">
-            Create Account
+          <h2 className="text-3xl font-black tracking-tight text-foreground">
+            Create <span className="text-[#FF6B00]">Account</span>
           </h2>
           <p className="mt-2 text-sm text-default-500">
             Already have an account?{" "}
@@ -97,7 +97,7 @@ export default function RegisterPage() {
         </div>
 
         {errorMsg && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="rounded-xl bg-danger-500/10 p-3 text-sm text-danger border border-danger-500/20 mb-6 text-center"
@@ -109,11 +109,11 @@ export default function RegisterPage() {
         <Form className="flex flex-col gap-5" onSubmit={handleRegister}>
           <TextField isRequired name="name" type="text" labelPlacement="outside">
             <Label className="font-semibold text-xs tracking-wider text-default-600 uppercase">Full Name</Label>
-            <Input 
-              placeholder="Alex Johnson" 
+            <Input
+              placeholder="Alex Johnson"
               variant="bordered"
-              size="lg" 
-              className="mt-1.5" 
+              size="lg"
+              className="mt-1.5"
               className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
             <FieldError className="text-xs text-danger mt-1 font-medium" />
@@ -132,11 +132,11 @@ export default function RegisterPage() {
             }}
           >
             <Label className="font-semibold text-xs tracking-wider text-default-600 uppercase">Email Address</Label>
-            <Input 
-              placeholder="you@example.com" 
+            <Input
+              placeholder="you@example.com"
               variant="bordered"
-              size="lg" 
-              className="mt-1.5" 
+              size="lg"
+              className="mt-1.5"
               className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
             <FieldError className="text-xs text-danger mt-1 font-medium" />
@@ -147,7 +147,7 @@ export default function RegisterPage() {
             <label className="font-semibold text-xs tracking-wider text-default-600 uppercase">
               Upload Profile Avatar <span className="text-default-400 font-normal lowercase">(optional)</span>
             </label>
-            <input 
+            <input
               type="file"
               name="imageFile"
               accept="image/*"
@@ -174,10 +174,10 @@ export default function RegisterPage() {
             }}
           >
             <Label className="font-semibold text-xs tracking-wider text-default-600 uppercase">Password</Label>
-            <Input 
-              placeholder="••••••••" 
+            <Input
+              placeholder="••••••••"
               variant="bordered"
-              size="lg" 
+              size="lg"
               className="mt-1.5"
               className="h-12 w-full rounded-xl border border-default-200 bg-transparent px-3 text-sm outline-none transition-colors duration-200 hover:border-primary focus:border-primary"
             />
@@ -191,7 +191,7 @@ export default function RegisterPage() {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full font-bold shadow-lg shadow-primary/20 h-12 mt-4 text-white bg-primary transition-transform active:scale-98"
+            className="w-full font-bold shadow-lg shadow-primary/20 h-12 mt-4 text-white bg-[#FF6B00] transition-transform active:scale-98"
             isLoading={loading}
           >
             {loading ? (uploadStatus || "Creating Account...") : "Create Account"}

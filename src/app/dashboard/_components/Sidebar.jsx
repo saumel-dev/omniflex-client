@@ -21,13 +21,13 @@ import { authClient } from "@/app/lib/auth-client";
 const sidebarRoutes = {
     ADMIN: [
         { label: "Overview", href: "/dashboard", icon: House },
-        { label: "Manage Users", href: "/dashboard/users", icon: Person },
-        { label: "Applied Trainers", href: "/dashboard/applied-trainers", icon: LayoutCellsLarge },
-        { label: "Manage Trainers", href: "/dashboard/manage-trainers", icon: Person },
-        { label: "Manage Classes", href: "/dashboard/manage-classes", icon: ListCheck },
-        { label: "Add Forum Post", href: "/dashboard/add-forum", icon: Plus },
-        { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard },
-        { label: "Manage Forums", href: "/dashboard/manage-forums", icon: LayoutCellsLarge },
+        { label: "Manage Users", href: "/dashboard/admin/users", icon: Person },
+        { label: "Applied Trainers", href: "/dashboard/admin/applied-trainers", icon: LayoutCellsLarge },
+        { label: "Manage Trainers", href: "/dashboard/admin/manage-trainers", icon: Person },
+        { label: "Manage Classes", href: "/dashboard/admin/manage-classes", icon: ListCheck },
+        { label: "Add Forum Post", href: "/dashboard/admin/add-forum", icon: Plus },
+        { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
+        { label: "Manage Forums", href: "/dashboard/admin/manage-forums", icon: LayoutCellsLarge },
     ],
     TRAINER: [
         { label: "Overview", href: "/dashboard", icon: House },
@@ -38,9 +38,9 @@ const sidebarRoutes = {
     ],
     USER: [
         { label: "Overview", href: "/dashboard", icon: House },
-        { label: "Booked Classes", href: "/dashboard/booked-classes", icon: Bookmark },
-        { label: "Apply as Trainer", href: "/dashboard/apply-trainer", icon: Person },
-        { label: "Favorite Classes", href: "/dashboard/favorites", icon: Heart },
+        { label: "Booked Classes", href: "/dashboard/user/booked-classes", icon: Bookmark },
+        { label: "Apply as Trainer", href: "/dashboard/user/apply-trainer", icon: Person },
+        { label: "Favorite Classes", href: "/dashboard/user/favorites", icon: Heart },
     ],
 };
 

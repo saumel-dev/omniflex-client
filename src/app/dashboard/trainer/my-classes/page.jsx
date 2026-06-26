@@ -5,7 +5,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { Button, Modal, AlertDialog, Surface, TextField, Label, Input } from "@heroui/react";
 import { Pencil, TrashBin, ArrowRotateRight } from "@gravity-ui/icons";
 
-const CATEGORIES = ["Yoga", "Cardio", "Weights", "Combat", "Zumba", "CrossFit"];
+const CATEGORIES = ["Mass Gain", "Cardio", "Strength", "Powerlifting", "Fat Loss", "Yoga"];
 const DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced"];
 
 export default function MyClassesPage() {
@@ -154,8 +154,8 @@ export default function MyClassesPage() {
                         {/* 📱 MOBILE RESPONSIVE CARDS VIEW (No scroll needed, clear gaps) */}
                         <div className="block md:hidden space-y-3">
                             {classes.map((cls) => (
-                                <div 
-                                    key={cls._id} 
+                                <div
+                                    key={cls._id}
                                     className="p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/30 flex flex-col gap-3"
                                 >
                                     <div className="flex gap-3 items-start">

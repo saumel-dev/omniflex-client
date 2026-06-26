@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { authClient } from "@/app/lib/auth-client";
 
-const CATEGORIES = ["Yoga", "Cardio", "Weights", "Combat", "Zumba", "CrossFit"];
+const CATEGORIES = ["Mass Gain", "Cardio", "Strength", "Powerlifting", "Fat Loss", "Yoga"];
 const DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

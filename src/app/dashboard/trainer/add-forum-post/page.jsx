@@ -16,7 +16,7 @@ export default function AddForumPostPage() {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setImagePreview(URL.createObjectURL(file)); // Generate instantaneous live display context string
+            setImagePreview(URL.createObjectURL(file)); 
         }
     };
 
@@ -91,9 +91,9 @@ export default function AddForumPostPage() {
         <div className="w-full max-w-5xl mx-auto flex flex-col justify-center px-4 py-2">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-2xl flex flex-col overflow-hidden transition-colors duration-200">
                 
-                {/* Header Block with Neon Variant Style */}
+                {/* Header Block with primary brand style (#FF6B00) */}
                 <div className="flex items-center gap-2 mb-5 border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                    <span className="text-[#a3e635] font-bold text-lg">✦</span>
+                    <span className="text-[#FF6B00] font-bold text-lg">✦</span>
                     <h1 className="text-base font-bold text-zinc-800 dark:text-zinc-100 tracking-tight">Add Forum Post</h1>
                 </div>
 
@@ -108,7 +108,7 @@ export default function AddForumPostPage() {
                             required
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full h-9 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 text-xs text-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-[#a3e635] dark:focus:border-[#a3e635] transition-all"
+                            className="w-full h-9 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 text-xs text-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-[#FF6B00] dark:focus:border-[#FF6B00] transition-all"
                         />
                     </TextField>
 
@@ -148,7 +148,7 @@ export default function AddForumPostPage() {
                     <div>
                         <div className="flex justify-between items-center mb-1">
                             <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Description</label>
-                            <span className={`text-[10px] font-bold ${description.length >= 100 ? "text-[#a3e635]" : "text-zinc-400"}`}>
+                            <span className={`text-[10px] font-bold ${description.length >= 100 ? "text-[#FF6B00]" : "text-zinc-400"}`}>
                                 ({description.length}/100 MIN)
                             </span>
                         </div>
@@ -157,7 +157,7 @@ export default function AddForumPostPage() {
                             required
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-[#a3e635] dark:focus:border-[#a3e635] focus:bg-white dark:focus:bg-zinc-950 h-28 resize-none transition-all"
+                            className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-[#FF6B00] dark:focus:border-[#FF6B00] focus:bg-white dark:focus:bg-zinc-950 h-28 resize-none transition-all"
                         />
                     </div>
 
@@ -175,11 +175,11 @@ export default function AddForumPostPage() {
                         </div>
                     )}
 
-                    {/* Submission Button Trigger using the greenish-yellow theme layout */}
+                    {/* Submission Button Trigger using the precise primary brand color variant styling */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-9 bg-[#a3e635] hover:bg-[#bbf7d0] text-black font-bold text-xs tracking-wider uppercase rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full h-9 bg-[#FF6B00] hover:bg-[#e05e00] text-white font-bold text-xs tracking-wider uppercase rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? "Publishing Post Content..." : "Publish Post"}
                     </button>

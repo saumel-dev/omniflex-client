@@ -31,9 +31,9 @@ const sidebarRoutes = {
     ],
     TRAINER: [
         { label: "Overview", href: "/dashboard", icon: House },
-        { label: "Add Class", href: "/dashboard/add-class", icon: Plus },
-        { label: "My Classes", href: "/dashboard/my-classes", icon: ListCheck },
-        { label: "Add Forum Post", href: "/dashboard/add-forum", icon: Plus },
+        { label: "Add Class", href: "/dashboard/trainer/add-class", icon: Plus },
+        { label: "My Classes", href: "/dashboard/trainer/my-classes", icon: ListCheck },
+        { label: "Add Forum Post", href: "/dashboard/trainer/add-forum-post", icon: Plus },
         { label: "My Forum Posts", href: "/dashboard/my-forums", icon: LayoutCellsLarge },
     ],
     USER: [

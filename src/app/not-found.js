@@ -25,7 +25,7 @@ export default function NotFound() {
           Page Not Found
         </h2>
         <p className="text-sm text-default-500 leading-relaxed">
-          The page you are looking for might have been removed. <br></br> Let's get you back on track!
+          The page you are looking for might have been removed. <br></br> Lets get you back on track!
         </p>
       </div>
 

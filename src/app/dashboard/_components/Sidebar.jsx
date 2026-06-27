@@ -26,8 +26,8 @@ const sidebarRoutes = {
         { label: "Manage Trainers", href: "/dashboard/admin/manage-trainers", icon: Person },
         { label: "Manage Classes", href: "/dashboard/admin/manage-classes", icon: ListCheck },
         { label: "Add Forum Post", href: "/dashboard/admin/add-forum", icon: Plus },
-        { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
         { label: "Manage Forums", href: "/dashboard/admin/manage-forums", icon: LayoutCellsLarge },
+        { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
     ],
     TRAINER: [
         { label: "Overview", href: "/dashboard", icon: House },

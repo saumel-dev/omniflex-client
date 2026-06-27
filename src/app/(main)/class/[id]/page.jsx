@@ -6,23 +6,23 @@ import Link from "next/link";
 import { authClient } from "@/app/lib/auth-client";
 
 const DIFFICULTY_STYLES = {
-    Beginner: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
+    Beginner:     "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
     Intermediate: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25",
-    Advanced: "bg-red-500/15 text-red-500 dark:text-red-400 border border-red-500/25",
+    Advanced:     "bg-red-500/15 text-red-500 dark:text-red-400 border border-red-500/25",
 };
 
 export default function ClassDetailsPage() {
-    const { id } = useParams();
-    const router = useRouter();
+    const { id }   = useParams();
+    const router   = useRouter();
 
-    const [cls, setCls] = useState(null);
-    const [related, setRelated] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [cls, setCls]               = useState(null);
+    const [related, setRelated]       = useState([]);
+    const [loading, setLoading]       = useState(true);
+    const [error, setError]           = useState("");
 
     // Favorite state
-    const [isFavorited, setIsFavorited] = useState(false);
-    const [favLoading, setFavLoading] = useState(false);
+    const [isFavorited, setIsFavorited]       = useState(false);
+    const [favLoading, setFavLoading]         = useState(false);
 
     // Session
     const [session, setSession] = useState(null);
@@ -70,7 +70,7 @@ export default function ClassDetailsPage() {
         const checkFav = async () => {
             try {
                 const tokenRes = await authClient.token();
-                const token = tokenRes?.data?.token || tokenRes?.token;
+                const token    = tokenRes?.data?.token || tokenRes?.token;
                 if (!token) return;
 
                 const res = await fetch(
@@ -99,7 +99,7 @@ export default function ClassDetailsPage() {
         setFavLoading(true);
         try {
             const tokenRes = await authClient.token();
-            const token = tokenRes?.data?.token || tokenRes?.token;
+            const token    = tokenRes?.data?.token || tokenRes?.token;
 
             if (isFavorited) {
                 // Remove
@@ -367,10 +367,11 @@ export default function ClassDetailsPage() {
                             <button
                                 onClick={handleFavorite}
                                 disabled={favLoading}
-                                className={`w-full flex items-center justify-center gap-2 h-10 text-sm font-bold rounded-xl border transition-all disabled:opacity-50 ${isFavorited
+                                className={`w-full flex items-center justify-center gap-2 h-10 text-sm font-bold rounded-xl border transition-all disabled:opacity-50 ${
+                                    isFavorited
                                         ? "bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500"
                                         : "bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-[#FF6B00]/50 hover:text-[#FF6B00]"
-                                    }`}
+                                }`}
                             >
                                 <svg
                                     className="w-4 h-4"
@@ -384,11 +385,76 @@ export default function ClassDetailsPage() {
                                 {favLoading
                                     ? "Saving..."
                                     : isFavorited
-                                        ? "Remove from Favorites"
-                                        : "Add to Favorites"}
+                                    ? "Remove from Favorites"
+                                    : "Add to Favorites"}
                             </button>
                         </div>
 
                         {/* Schedule card */}
                         <div className="bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-3"></div>
+                            <div className="flex items-center gap-2 mb-3">
+                                <svg className="w-4 h-4 text-[#FF6B00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF6B00]">Schedule</span>
+                            </div>
+                            <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                                {scheduleText}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Related Classes ── */}
+            {related.length > 0 && (
+                <div className="max-w-6xl mx-auto px-4 pb-14">
+                    <div className="flex items-center justify-between mb-5">
+                        <h2 className="text-base font-bold text-zinc-900 dark:text-white">
+                            More{" "}
+                            <span className="text-[#FF6B00]">{cls.category}</span>{" "}
+                            Classes
+                        </h2>
+                        <Link
+                            href={`/all_classes`}
+                            className="flex items-center gap-1 text-xs font-bold text-[#FF6B00] hover:underline"
+                        >
+                            View all
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {related.map((r) => (
+                            <Link
+                                key={r._id}
+                                href={`/class/${r._id}`}
+                                className="group flex items-center gap-3 bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 hover:border-[#FF6B00]/40 hover:shadow-md transition-all"
+                            >
+                                {/* Thumbnail */}
+                                <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
+                                    <img src={r.image} alt={r.className} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                    <span className="absolute top-1 left-1 text-[8px] font-bold bg-[#FF6B00] text-white px-1.5 py-0.5 rounded-full">
+                                        {r.category}
+                                    </span>
+                                </div>
+                                {/* Info */}
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-xs font-bold text-zinc-900 dark:text-white line-clamp-1 group-hover:text-[#FF6B00] transition-colors">
+                                        {r.className}
+                                    </p>
+                                    <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">
+                                        {r.duration} min · {r.difficulty}
+                                    </p>
+                                    <p className="text-[12px] font-black text-[#FF6B00] mt-1">${r.price}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}

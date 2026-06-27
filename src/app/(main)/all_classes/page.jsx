@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
 
 const CATEGORIES = ["All", "Mass Gain", "Cardio", "Strength", "Powerlifting", "Fat Loss", "Yoga"];
 const LIMIT = 9;
@@ -12,9 +13,39 @@ const DIFFICULTY_STYLES = {
     Advanced:     "bg-red-500/15 text-red-500 dark:text-red-400 border border-red-500/25",
 };
 
+// ── Reusable animation variants ───────────────────────────────────
+const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+};
+
+const fadeIn = {
+    hidden: { opacity: 0 },
+    show:   { opacity: 1, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
+const staggerContainer = {
+    hidden: {},
+    show:   { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+};
+
+const cardVariant = {
+    hidden: { opacity: 0, y: 24, scale: 0.98 },
+    show:   { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
+};
+
+const pillVariant = {
+    hidden: { opacity: 0, scale: 0.85 },
+    show:   { opacity: 1, scale: 1, transition: { duration: 0.25, ease: "easeOut" } },
+};
+
+// ── ClassCard ────────────────────────────────────────────────────
 function ClassCard({ cls }) {
     return (
-        <div className="group bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden flex flex-col hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xl dark:hover:shadow-zinc-900/60 transition-all duration-300">
+        <motion.div
+            variants={cardVariant}
+            className="group bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden flex flex-col hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xl dark:hover:shadow-zinc-900/60 transition-all duration-300"
+        >
             <div className="relative w-full h-48 overflow-hidden shrink-0">
                 <img
                     src={cls.image}
@@ -70,10 +101,11 @@ function ClassCard({ cls }) {
                     </Link>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
 
+// ── SkeletonCard ─────────────────────────────────────────────────
 function SkeletonCard() {
     return (
         <div className="bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden animate-pulse">
@@ -99,6 +131,7 @@ function SkeletonCard() {
     );
 }
 
+// ── Main Page ────────────────────────────────────────────────────
 export default function AllClassesPage() {
     const [classes, setClasses]       = useState([]);
     const [total, setTotal]           = useState(0);
@@ -109,8 +142,6 @@ export default function AllClassesPage() {
     const [search, setSearch]         = useState("");
     const [activeCategory, setActiveCategory] = useState("All");
 
-    // Tracks whether a filter/search change triggered the current fetch
-    // so the page-change effect doesn't double-fire on mount
     const isFilterChange = useRef(false);
 
     const fetchClasses = useCallback(async (searchVal, category, pageNum) => {
@@ -139,17 +170,13 @@ export default function AllClassesPage() {
         }
     }, []);
 
-    // Fires when search text or category changes — resets to page 1, debounced
     useEffect(() => {
         isFilterChange.current = true;
         setPage(1);
-        const timer = setTimeout(() => {
-            fetchClasses(search, activeCategory, 1);
-        }, 400);
+        const timer = setTimeout(() => fetchClasses(search, activeCategory, 1), 400);
         return () => clearTimeout(timer);
     }, [search, activeCategory, fetchClasses]);
 
-    // Fires when page number changes — skip if it was caused by a filter reset above
     useEffect(() => {
         if (isFilterChange.current) {
             isFilterChange.current = false;
@@ -162,7 +189,6 @@ export default function AllClassesPage() {
     const startItem = total === 0 ? 0 : (page - 1) * LIMIT + 1;
     const endItem   = Math.min(page * LIMIT, total);
 
-    // Smart page number list with ellipsis
     const pageItems = Array.from({ length: totalPages }, (_, i) => i + 1)
         .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
         .reduce((acc, p, idx, arr) => {
@@ -171,31 +197,53 @@ export default function AllClassesPage() {
             return acc;
         }, []);
 
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
-
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-[#090D16]">
 
-            {/* Hero Header */}
+            {/* ── Hero Header ── */}
             <div className="bg-white dark:bg-[#111214] border-b border-zinc-200 dark:border-zinc-800">
                 <div className="max-w-6xl mx-auto px-4 py-14 text-center">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 px-3 py-1 rounded-full mb-5">
+
+                    {/* Badge */}
+                    <motion.span
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 px-3 py-1 rounded-full mb-5"
+                    >
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
                         </svg>
                         Explore All Classes
-                    </span>
-                    <h1 className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">
+                    </motion.span>
+
+                    {/* Heading */}
+                    <motion.h1
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut", delay: 0.08 }}
+                        className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mb-3"
+                    >
                         Find Your <span className="text-[#FF6B00]">Perfect Class</span>
-                    </h1>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto mb-8 leading-relaxed">
+                    </motion.h1>
+
+                    {/* Subtitle */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
+                        className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto mb-8 leading-relaxed"
+                    >
                         Browse our curated fitness classes led by expert trainers. Filter by category and discover the right fit for your goals.
-                    </p>
+                    </motion.p>
 
                     {/* Search */}
-                    <div className="relative max-w-lg mx-auto mb-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut", delay: 0.22 }}
+                        className="relative max-w-lg mx-auto mb-6"
+                    >
                         <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
                         </svg>
@@ -206,24 +254,37 @@ export default function AllClassesPage() {
                             placeholder="Search classes by name..."
                             className="w-full pl-11 pr-10 py-3 text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/30 focus:border-[#FF6B00] transition-all shadow-sm"
                         />
-                        {search && (
-                            <button
-                                onClick={() => setSearch("")}
-                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-                            >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
+                        <AnimatePresence>
+                            {search && (
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.7 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.7 }}
+                                    transition={{ duration: 0.15 }}
+                                    onClick={() => setSearch("")}
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </motion.button>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
 
-                    {/* Category Pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-2">
+                    {/* Category Pills — staggered */}
+                    <motion.div
+                        variants={staggerContainer}
+                        initial="hidden"
+                        animate="show"
+                        className="flex flex-wrap items-center justify-center gap-2"
+                    >
                         {CATEGORIES.map((cat) => (
-                            <button
+                            <motion.button
                                 key={cat}
+                                variants={pillVariant}
                                 onClick={() => setActiveCategory(cat)}
+                                whileTap={{ scale: 0.93 }}
                                 className={`px-4 py-1.5 text-[12px] font-bold rounded-full border transition-all ${
                                     activeCategory === cat
                                         ? "bg-[#FF6B00] text-white border-[#FF6B00] shadow-md shadow-[#FF6B00]/20"
@@ -231,50 +292,67 @@ export default function AllClassesPage() {
                                 }`}
                             >
                                 {cat}
-                            </button>
+                            </motion.button>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
-            {/* Content Area */}
+            {/* ── Content Area ── */}
             <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col min-h-[60vh]">
 
                 {/* Showing counter */}
-                {!loading && !error && total > 0 && (
-                    <div className="flex items-center gap-2 mb-6">
-                        <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h10" />
-                        </svg>
-                        <p className="text-[12px] text-zinc-500 dark:text-zinc-400">
-                            Showing{" "}
-                            <span className="font-bold text-zinc-800 dark:text-zinc-200">{startItem}–{endItem}</span>
-                            {" "}of{" "}
-                            <span className="font-bold text-zinc-800 dark:text-zinc-200">{total}</span>
-                            {" "}classes
-                            {activeCategory !== "All" && <span> in <span className="text-[#FF6B00] font-bold">{activeCategory}</span></span>}
-                            {search && <span> for <span className="text-[#FF6B00] font-bold">"{search}"</span></span>}
-                        </p>
-                    </div>
-                )}
+                <AnimatePresence mode="wait">
+                    {!loading && !error && total > 0 && (
+                        <motion.div
+                            key="counter"
+                            variants={fadeIn}
+                            initial="hidden"
+                            animate="show"
+                            exit="hidden"
+                            className="flex items-center gap-2 mb-6"
+                        >
+                            <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h10" />
+                            </svg>
+                            <p className="text-[12px] text-zinc-500 dark:text-zinc-400">
+                                Showing{" "}
+                                <span className="font-bold text-zinc-800 dark:text-zinc-200">{startItem}–{endItem}</span>
+                                {" "}of{" "}
+                                <span className="font-bold text-zinc-800 dark:text-zinc-200">{total}</span>
+                                {" "}classes
+                                {activeCategory !== "All" && <span> in <span className="text-[#FF6B00] font-bold">{activeCategory}</span></span>}
+                                {search && <span> for <span className="text-[#FF6B00] font-bold">"{search}"</span></span>}
+                            </p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Error */}
-                {error && (
-                    <div className="text-center py-20 flex-1">
-                        <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <p className="text-sm font-semibold text-red-500 mb-4">{error}</p>
-                        <button
-                            onClick={() => fetchClasses(search, activeCategory, page)}
-                            className="text-xs px-5 py-2 bg-[#FF6B00] text-white rounded-lg font-bold hover:bg-[#e05e00] transition-colors"
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            animate="show"
+                            exit="hidden"
+                            className="text-center py-20 flex-1"
                         >
-                            Try Again
-                        </button>
-                    </div>
-                )}
+                            <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <p className="text-sm font-semibold text-red-500 mb-4">{error}</p>
+                            <button
+                                onClick={() => fetchClasses(search, activeCategory, page)}
+                                className="text-xs px-5 py-2 bg-[#FF6B00] text-white rounded-lg font-bold hover:bg-[#e05e00] transition-colors"
+                            >
+                                Try Again
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Skeleton */}
                 {loading && (
@@ -284,114 +362,116 @@ export default function AllClassesPage() {
                 )}
 
                 {/* Empty state */}
-                {!loading && !error && classes.length === 0 && (
-                    <div className="text-center py-24 flex-1">
-                        <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-7 h-7 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
-                            </svg>
-                        </div>
-                        <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-1">No classes found</p>
-                        <p className="text-xs text-zinc-400 dark:text-zinc-600">
-                            {search || activeCategory !== "All" ? "Try adjusting your search or filter." : "No approved classes available yet."}
-                        </p>
-                        {(search || activeCategory !== "All") && (
-                            <button
-                                onClick={() => { setSearch(""); setActiveCategory("All"); }}
-                                className="mt-5 text-xs px-4 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00] hover:text-[#FF6B00] transition-colors font-semibold"
-                            >
-                                Clear filters
-                            </button>
-                        )}
-                    </div>
-                )}
-
-                {/* Cards Grid */}
-                {!loading && !error && classes.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {classes.map((cls) => (
-                            <ClassCard key={cls._id} cls={cls} />
-                        ))}
-                    </div>
-                )}
-
-                {/* ─────────────────────────────────────────────────────────
-                    PAGINATION BAR
-                    Always rendered when totalPages > 1, sits at the bottom
-                ───────────────────────────────────────────────────────── */}
-                {!loading && !error && totalPages > 1 && (
-                    <div className="mt-10 flex items-center justify-between bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-xl px-5 py-3.5 shadow-sm">
-
-                        {/* Left — page info */}
-                        <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                            Page{" "}
-                            <span className="font-bold text-zinc-900 dark:text-white">{page}</span>
-                            {" "}of{" "}
-                            <span className="font-bold text-zinc-900 dark:text-white">{totalPages}</span>
-                        </p>
-
-                        {/* Right — controls */}
-                        <div className="flex items-center gap-1.5">
-
-                            {/* ← Previous */}
-                            <button
-                                onClick={() => handlePageChange(Math.max(1, page - 1))}
-                                disabled={page === 1}
-                                className="flex items-center gap-1 h-8 px-3 rounded-lg border text-[11px] font-bold transition-all
-                                    border-zinc-200 dark:border-zinc-700
-                                    text-zinc-500 dark:text-zinc-400
-                                    hover:border-[#FF6B00]/60 hover:text-[#FF6B00]
-                                    disabled:opacity-35 disabled:cursor-not-allowed
-                                    disabled:hover:border-zinc-200 dark:disabled:hover:border-zinc-700
-                                    disabled:hover:text-zinc-500 dark:disabled:hover:text-zinc-400"
-                            >
-                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                <AnimatePresence>
+                    {!loading && !error && classes.length === 0 && (
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            animate="show"
+                            exit="hidden"
+                            className="text-center py-24 flex-1"
+                        >
+                            <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-7 h-7 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" />
                                 </svg>
-                                Previous
-                            </button>
-
-                            {/* Page number pills */}
-                            {pageItems.map((item) =>
-                                typeof item === "string" ? (
-                                    <span key={item} className="w-8 text-center text-xs text-zinc-400 dark:text-zinc-500 select-none">
-                                        …
-                                    </span>
-                                ) : (
-                                    <button
-                                        key={item}
-                                        onClick={() => handlePageChange(item)}
-                                        className={`w-8 h-8 rounded-lg text-[12px] font-bold transition-all ${
-                                            page === item
-                                                ? "bg-[#FF6B00] text-white border border-[#FF6B00] shadow-md shadow-[#FF6B00]/25"
-                                                : "border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00]/60 hover:text-[#FF6B00]"
-                                        }`}
-                                    >
-                                        {item}
-                                    </button>
-                                )
+                            </div>
+                            <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-1">No classes found</p>
+                            <p className="text-xs text-zinc-400 dark:text-zinc-600">
+                                {search || activeCategory !== "All" ? "Try adjusting your search or filter." : "No approved classes available yet."}
+                            </p>
+                            {(search || activeCategory !== "All") && (
+                                <button
+                                    onClick={() => { setSearch(""); setActiveCategory("All"); }}
+                                    className="mt-5 text-xs px-4 py-2 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00] hover:text-[#FF6B00] transition-colors font-semibold"
+                                >
+                                    Clear filters
+                                </button>
                             )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                            {/* Next → */}
-                            <button
-                                onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
-                                disabled={page === totalPages}
-                                className="flex items-center gap-1 h-8 px-3 rounded-lg border text-[11px] font-bold transition-all
-                                    border-zinc-200 dark:border-zinc-700
-                                    text-zinc-500 dark:text-zinc-400
-                                    hover:border-[#FF6B00]/60 hover:text-[#FF6B00]
-                                    disabled:opacity-35 disabled:cursor-not-allowed
-                                    disabled:hover:border-zinc-200 dark:disabled:hover:border-zinc-700
-                                    disabled:hover:text-zinc-500 dark:disabled:hover:text-zinc-400"
-                            >
-                                Next
-                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {/* Cards Grid — staggered entrance, re-animates on page/filter change */}
+                <AnimatePresence mode="wait">
+                    {!loading && !error && classes.length > 0 && (
+                        <motion.div
+                            key={`${page}-${activeCategory}-${search}`}
+                            variants={staggerContainer}
+                            initial="hidden"
+                            animate="show"
+                            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        >
+                            {classes.map((cls) => (
+                                <ClassCard key={cls._id} cls={cls} />
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Pagination Bar */}
+                <AnimatePresence>
+                    {!loading && !error && totalPages > 1 && (
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            animate="show"
+                            exit="hidden"
+                            className="mt-10 flex items-center justify-between bg-white dark:bg-[#111214] border border-zinc-200 dark:border-zinc-800 rounded-xl px-5 py-3.5 shadow-sm"
+                        >
+                            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                                Page{" "}
+                                <span className="font-bold text-zinc-900 dark:text-white">{page}</span>
+                                {" "}of{" "}
+                                <span className="font-bold text-zinc-900 dark:text-white">{totalPages}</span>
+                            </p>
+
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                    disabled={page === 1}
+                                    className="flex items-center gap-1 h-8 px-3 rounded-lg border text-[11px] font-bold transition-all border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:border-zinc-200 dark:disabled:hover:border-zinc-700 disabled:hover:text-zinc-500 dark:disabled:hover:text-zinc-400"
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Previous
+                                </button>
+
+                                {pageItems.map((item) =>
+                                    typeof item === "string" ? (
+                                        <span key={item} className="w-8 text-center text-xs text-zinc-400 dark:text-zinc-500 select-none">…</span>
+                                    ) : (
+                                        <motion.button
+                                            key={item}
+                                            whileTap={{ scale: 0.88 }}
+                                            onClick={() => setPage(item)}
+                                            className={`w-8 h-8 rounded-lg text-[12px] font-bold transition-all ${
+                                                page === item
+                                                    ? "bg-[#FF6B00] text-white border border-[#FF6B00] shadow-md shadow-[#FF6B00]/25"
+                                                    : "border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00]/60 hover:text-[#FF6B00]"
+                                            }`}
+                                        >
+                                            {item}
+                                        </motion.button>
+                                    )
+                                )}
+
+                                <button
+                                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                    disabled={page === totalPages}
+                                    className="flex items-center gap-1 h-8 px-3 rounded-lg border text-[11px] font-bold transition-all border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:border-zinc-200 dark:disabled:hover:border-zinc-700 disabled:hover:text-zinc-500 dark:disabled:hover:text-zinc-400"
+                                >
+                                    Next
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
             </div>
         </div>

@@ -2,6 +2,30 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ── Animation Variants ─────────────────────────────────────────────────────
+const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: (i = 0) => ({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.45, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
+    }),
+};
+
+const staggerContainer = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.07 } },
+};
+
+const cardVariant = {
+    hidden: { opacity: 0, y: 30, scale: 0.97 },
+    visible: {
+        opacity: 1, y: 0, scale: 1,
+        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+    },
+};
 
 export default function CommunityForumPage() {
     const [posts, setPosts] = useState([]);
@@ -19,11 +43,9 @@ export default function CommunityForumPage() {
                 page: currentPage,
                 ...(search && { search }),
             });
-
             const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts?${params}`);
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to load posts.");
-
             setPosts(data.posts);
             setTotalPages(data.totalPages);
             setTotal(data.total);
@@ -38,7 +60,7 @@ export default function CommunityForumPage() {
         fetchPosts();
     }, [fetchPosts]);
 
-    // Debounce search — fire after user stops typing 400ms
+    // Debounced search — reset to page 1
     useEffect(() => {
         const timer = setTimeout(() => {
             setSearch(searchInput);
@@ -47,6 +69,15 @@ export default function CommunityForumPage() {
         return () => clearTimeout(timer);
     }, [searchInput]);
 
+    // ✅ FIX 2: Scroll to top whenever page changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [currentPage]);
+
+    const handlePageChange = (p) => {
+        setCurrentPage(p);
+    };
+
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         return new Date(dateStr).toLocaleDateString("en-US", {
@@ -54,45 +85,53 @@ export default function CommunityForumPage() {
         });
     };
 
-    const truncate = (text, len = 100) => {
+    const truncate = (text, len = 110) => {
         if (!text) return "";
         return text.length > len ? text.slice(0, len) + "..." : text;
     };
-
-    // Skeleton cards
-    const SkeletonCard = () => (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden animate-pulse">
-            <div className="h-44 bg-zinc-100 dark:bg-zinc-800" />
-            <div className="p-4 space-y-3">
-                <div className="h-3 w-16 bg-zinc-100 dark:bg-zinc-800 rounded-full" />
-                <div className="h-4 w-3/4 bg-zinc-100 dark:bg-zinc-800 rounded" />
-                <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded" />
-                <div className="h-3 w-2/3 bg-zinc-100 dark:bg-zinc-800 rounded" />
-                <div className="h-8 w-24 bg-zinc-100 dark:bg-zinc-800 rounded-lg mt-2" />
-            </div>
-        </div>
-    );
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
             <div className="max-w-6xl mx-auto px-4 py-10">
 
-                {/* ── Hero Header ────────────────────────────────────────────── */}
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-orange-200 dark:border-orange-900/50 bg-orange-50 dark:bg-orange-950/30 text-[11px] font-bold text-orange-500 mb-4">
-                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                        Community
-                    </div>
-                    <h1 className="text-3xl sm:text-4xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight mb-3">
-                        Community <span className="text-orange-500">Forum</span>
-                    </h1>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
-                        Connect with trainers, share your fitness journey, and grow with the community.
-                    </p>
-                </div>
+                {/* ── Hero Header ─────────────────────────────────────────────────── */}
+                <motion.div
+                    className="text-center mb-10"
+                    initial="hidden"
+                    animate="visible"
+                    variants={staggerContainer}
+                >
+                    <motion.div variants={fadeUp} custom={0}>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-orange-200 dark:border-orange-900/50 bg-orange-50 dark:bg-orange-950/30 text-[11px] font-bold text-orange-500 mb-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                            Community
+                        </div>
+                    </motion.div>
 
-                {/* ── Search Bar ─────────────────────────────────────────────── */}
-                <div className="relative max-w-lg mx-auto mb-8">
+                    <motion.h1
+                        variants={fadeUp}
+                        custom={1}
+                        className="text-3xl sm:text-4xl font-black text-zinc-800 dark:text-zinc-100 tracking-tight mb-3"
+                    >
+                        Community <span className="text-orange-500">Forum</span>
+                    </motion.h1>
+
+                    <motion.p
+                        variants={fadeUp}
+                        custom={2}
+                        className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto"
+                    >
+                        Connect with trainers, share your fitness journey, and grow with the community.
+                    </motion.p>
+                </motion.div>
+
+                {/* ── Search Bar ──────────────────────────────────────────────────── */}
+                <motion.div
+                    className="relative max-w-lg mx-auto mb-8"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                >
                     <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -103,54 +142,103 @@ export default function CommunityForumPage() {
                         onChange={(e) => setSearchInput(e.target.value)}
                         className="w-full h-11 pl-10 pr-4 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl placeholder-zinc-400 focus:outline-none focus:border-orange-500 dark:focus:border-orange-500 transition-colors text-zinc-800 dark:text-zinc-100 shadow-sm"
                     />
-                </div>
+                </motion.div>
 
-                {/* ── Results count ──────────────────────────────────────────── */}
-                {!loading && (
-                    <p className="text-[11px] text-zinc-400 mb-4">
-                        Showing <span className="font-bold text-orange-500">{posts.length}</span> of <span className="font-bold text-zinc-600 dark:text-zinc-300">{total}</span> posts
-                        {search && <span> for &quot;<span className="font-semibold">{search}</span>&quot;</span>}
-                    </p>
-                )}
+                {/* ── Results Count ───────────────────────────────────────────────── */}
+                <AnimatePresence mode="wait">
+                    {!loading && (
+                        <motion.p
+                            key={`count-${search}-${currentPage}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.25 }}
+                            className="text-[11px] text-zinc-400 mb-4"
+                        >
+                            Showing <span className="font-bold text-orange-500">{posts.length}</span> of{" "}
+                            <span className="font-bold text-zinc-600 dark:text-zinc-300">{total}</span> posts
+                            {search && (
+                                <span> for &quot;<span className="font-semibold">{search}</span>&quot;</span>
+                            )}
+                        </motion.p>
+                    )}
+                </AnimatePresence>
 
-                {/* ── Posts Grid ─────────────────────────────────────────────── */}
+                {/* ── Posts Grid ──────────────────────────────────────────────────── */}
+                {/* ✅ FIX 1: No AnimatePresence wrapping the grid — removes ghost space on exit */}
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden animate-pulse">
+                                <div className="h-44 bg-zinc-100 dark:bg-zinc-800" />
+                                <div className="p-4 space-y-3">
+                                    <div className="h-3 w-16 bg-zinc-100 dark:bg-zinc-800 rounded-full" />
+                                    <div className="h-4 w-3/4 bg-zinc-100 dark:bg-zinc-800 rounded" />
+                                    <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded" />
+                                    <div className="h-3 w-2/3 bg-zinc-100 dark:bg-zinc-800 rounded" />
+                                    <div className="h-8 w-24 bg-zinc-100 dark:bg-zinc-800 rounded-lg mt-2" />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ) : posts.length === 0 ? (
-                    <div className="text-center py-20">
-                        <p className="text-3xl mb-3">🏋️</p>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="text-center py-20"
+                    >
+                        <motion.p
+                            animate={{ rotate: [0, -10, 10, -10, 0] }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            className="text-4xl mb-3"
+                        >
+                            🏋️
+                        </motion.p>
                         <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">No posts found</p>
                         <p className="text-xs text-zinc-400 mt-1">Try a different search term</p>
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <motion.div
+                        key={`grid-${search}-${currentPage}`}
+                        variants={staggerContainer}
+                        initial="hidden"
+                        animate="visible"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                    >
                         {posts.map((post) => (
-                            <div
+                            <motion.div
                                 key={post._id}
-                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-200 flex flex-col"
+                                variants={cardVariant}
+                                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-shadow duration-200 flex flex-col"
                             >
                                 {/* Card Image */}
                                 <div className="relative h-44 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                                    <img
+                                    <motion.img
                                         src={post.image}
                                         alt={post.title}
                                         className="w-full h-full object-cover"
+                                        whileHover={{ scale: 1.05 }}
+                                        transition={{ duration: 0.4, ease: "easeOut" }}
                                     />
-                                    {/* Role badge overlay */}
-                                    <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 text-[10px] font-bold rounded-full ${
-                                        post.authorRole === "admin"
-                                            ? "bg-red-500 text-white"
-                                            : "bg-orange-500 text-white"
-                                    }`}>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -8 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                        className={`absolute top-2.5 left-2.5 px-2 py-0.5 text-[10px] font-bold rounded-full backdrop-blur-sm ${
+                                            post.authorRole === "admin"
+                                                ? "bg-red-500/90 text-white"
+                                                : "bg-orange-500/90 text-white"
+                                        }`}
+                                    >
                                         {post.authorRole === "admin" ? "Admin" : "Trainer"}
-                                    </span>
+                                    </motion.span>
                                 </div>
 
                                 {/* Card Body */}
                                 <div className="p-4 flex flex-col flex-1">
-                                    {/* Author + Date */}
                                     <div className="flex items-center gap-2 mb-2">
                                         {post.authorImage ? (
                                             <img
@@ -170,17 +258,14 @@ export default function CommunityForumPage() {
                                         </span>
                                     </div>
 
-                                    {/* Title */}
                                     <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mb-1.5 line-clamp-2 leading-snug">
                                         {post.title}
                                     </h3>
 
-                                    {/* Description preview */}
                                     <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-3 flex-1">
-                                        {truncate(post.description, 110)}
+                                        {truncate(post.description)}
                                     </p>
 
-                                    {/* Footer: likes + read more */}
                                     <div className="flex items-center justify-between mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800">
                                         <div className="flex items-center gap-3 text-[11px] text-zinc-400">
                                             <span className="flex items-center gap-1">
@@ -196,62 +281,81 @@ export default function CommunityForumPage() {
                                                 {post.comments?.length || 0}
                                             </span>
                                         </div>
-                                        <Link
-                                            href={`/forum/${post._id}`}
-                                            className="px-3 py-1.5 text-[11px] font-bold text-orange-500 border border-orange-200 dark:border-orange-900/50 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-lg transition-colors"
-                                        >
-                                            Read More
-                                        </Link>
+
+                                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                            <Link
+                                                href={`/forum/${post._id}`}
+                                                className="px-3 py-1.5 text-[11px] font-bold text-orange-500 border border-orange-200 dark:border-orange-900/50 hover:bg-orange-500 hover:text-white rounded-lg transition-colors duration-200"
+                                            >
+                                                Read More
+                                            </Link>
+                                        </motion.div>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 )}
 
-                {/* ── Pagination ─────────────────────────────────────────────── */}
-                {!loading && totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-2 mt-10">
-                        {/* Previous */}
-                        <button
-                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
-                            className="px-3 py-2 text-xs font-bold text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                {/* ── Pagination ──────────────────────────────────────────────────── */}
+                <AnimatePresence>
+                    {!loading && totalPages > 1 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.35, delay: 0.2 }}
+                            className="flex items-center justify-center gap-2 mt-10 flex-wrap"
                         >
-                            ← Previous
-                        </button>
-
-                        {/* Page Numbers */}
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                            <button
-                                key={page}
-                                onClick={() => setCurrentPage(page)}
-                                className={`w-9 h-9 text-xs font-bold rounded-lg transition-colors ${
-                                    currentPage === page
-                                        ? "bg-orange-500 text-white border border-orange-500 shadow-sm"
-                                        : "text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                                }`}
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                disabled={currentPage === 1}
+                                className="px-3 py-2 text-xs font-bold text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
-                                {page}
-                            </button>
-                        ))}
+                                ← Previous
+                            </motion.button>
 
-                        {/* Next */}
-                        <button
-                            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
-                            className="px-3 py-2 text-xs font-bold text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                        >
-                            Next →
-                        </button>
-                    </div>
-                )}
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <motion.button
+                                    key={page}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => handlePageChange(page)}
+                                    className={`w-9 h-9 text-xs font-bold rounded-lg transition-colors ${
+                                        currentPage === page
+                                            ? "bg-orange-500 text-white border border-orange-500 shadow-sm"
+                                            : "text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                                    }`}
+                                >
+                                    {page}
+                                </motion.button>
+                            ))}
 
-                {/* Page indicator */}
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                                disabled={currentPage === totalPages}
+                                className="px-3 py-2 text-xs font-bold text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Next →
+                            </motion.button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {!loading && totalPages > 1 && (
-                    <p className="text-center text-[11px] text-zinc-400 mt-3">
-                        Page <span className="font-bold text-zinc-600 dark:text-zinc-300">{currentPage}</span> of <span className="font-bold text-zinc-600 dark:text-zinc-300">{totalPages}</span>
-                    </p>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-center text-[11px] text-zinc-400 mt-3"
+                    >
+                        Page <span className="font-bold text-zinc-600 dark:text-zinc-300">{currentPage}</span> of{" "}
+                        <span className="font-bold text-zinc-600 dark:text-zinc-300">{totalPages}</span>
+                    </motion.p>
                 )}
             </div>
         </div>

@@ -71,11 +71,11 @@ export default function Footer() {
                         <ul className="space-y-3.5 text-sm font-light">
                             <li className="flex gap-3 items-start">
                                 <FiMapPin className="w-4 h-4 mt-0.5 text-[#FF6B00] flex-shrink-0" />
-                                <span className="leading-tight">128 Pulse Blvd, Cyber District, Dhaka, Bangladesh</span>
+                                <span className="leading-tight">Muradpur, Chittagong, Bangladesh</span>
                             </li>
                             <li className="flex gap-3 items-center">
                                 <FiPhone className="w-4 h-4 text-[#FF6B00] flex-shrink-0" />
-                                <span>+880 1712-345678</span>
+                                <span>+8801571124131</span>
                             </li>
                             <li className="flex gap-3 items-center">
                                 <FiMail className="w-4 h-4 text-[#FF6B00] flex-shrink-0" />

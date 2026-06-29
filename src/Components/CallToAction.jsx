@@ -56,13 +56,13 @@ export default function CallToAction() {
 
                         <div className="relative z-10">
                             {/* This link aligns perfectly with your bootcamp's become-a-trainer application route requirements */}
-                            <Link
-                                href="/become-trainer"
+                            {/* <Link
+                                href="/login"
                                 underline="none"
                                 className="inline-flex items-center gap-3 bg-[#FF6B00] text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl hover:bg-[#E56000] active:scale-[0.98] shadow-md shadow-[#FF6B00]/10 transition-all duration-200 no-underline"
                             >
                                 Start Today <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
 

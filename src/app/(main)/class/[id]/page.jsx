@@ -272,27 +272,45 @@ export default function ClassDetailsPage() {
                                 </div>
                             </div>
 
-                            {/* ✅ Book Now / Already Booked Button */}
-                            {isBooked ? (
-                                <div className="w-full flex items-center justify-center gap-2 h-11 bg-green-100 dark:bg-green-950/30 border border-green-300 dark:border-green-800 text-green-600 dark:text-green-400 text-sm font-bold rounded-xl mb-3 cursor-default">
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    Already Booked
-                                </div>
-                            ) : (
-                                <Link
-                                    href={session?.user ? `/payment/${cls._id}` : "/login"}
-                                    className="w-full flex items-center justify-center gap-2 h-11 bg-[#FF6B00] hover:bg-[#e05e00] text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-[#FF6B00]/25 mb-3"
-                                >
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                                    </svg>
-                                    {bookingCheckDone
-                                        ? `Book Now — $${cls.price}`
-                                        : "Loading..."}
-                                </Link>
-                            )}
+                            {/* ✅ Book Now / Already Booked — role-aware */}
+                            {(() => {
+                                const role = session?.user?.role;
+                                const isAdminOrTrainer = role === "admin" || role === "trainer";
+
+                                if (isAdminOrTrainer) {
+                                    return (
+                                        <div className="w-full flex items-center justify-center gap-2 h-11 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 text-sm font-bold rounded-xl mb-3 cursor-not-allowed">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                            </svg>
+                                            Not Available for {role === "admin" ? "Admins" : "Trainers"}
+                                        </div>
+                                    );
+                                }
+
+                                if (isBooked) {
+                                    return (
+                                        <div className="w-full flex items-center justify-center gap-2 h-11 bg-green-100 dark:bg-green-950/30 border border-green-300 dark:border-green-800 text-green-600 dark:text-green-400 text-sm font-bold rounded-xl mb-3 cursor-default">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            Already Booked
+                                        </div>
+                                    );
+                                }
+
+                                return (
+                                    <Link
+                                        href={session?.user ? `/payment/${cls._id}` : "/login"}
+                                        className="w-full flex items-center justify-center gap-2 h-11 bg-[#FF6B00] hover:bg-[#e05e00] text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-[#FF6B00]/25 mb-3"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                        </svg>
+                                        {bookingCheckDone ? `Book Now — $${cls.price}` : "Loading..."}
+                                    </Link>
+                                );
+                            })()}
 
                             {/* Add to Favorites */}
                             <button

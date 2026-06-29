@@ -101,7 +101,7 @@ export default function PaymentPage() {
                     <span className="text-orange-500 font-semibold">Stripe</span> checkout.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
                     {/* ── Order Summary ─────────────────────────────────────── */}
                     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
@@ -157,14 +157,31 @@ export default function PaymentPage() {
                         </div>
 
                         {/* Info box */}
-                        <div className="flex gap-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-6 flex-1">
-                            <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        {/* Info box */}
+                        <div className="flex gap-3 rounded-xl border border-orange-200 dark:border-orange-900/40 bg-orange-50 dark:bg-zinc-800/70 p-4 mb-6 transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-white dark:bg-orange-950/40 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+                                <svg
+                                    className="w-4 h-4 text-orange-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                    />
                                 </svg>
                             </div>
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                                You will be redirected to <span className="font-bold text-zinc-700 dark:text-zinc-300">Stripe</span> to complete your purchase securely. We do not store any of your payment information.
+
+                            <p className="text-xs leading-relaxed text-zinc-700 dark:text-zinc-300">
+                                You will be redirected to{" "}
+                                <span className="font-semibold text-zinc-900 dark:text-white">
+                                    Stripe
+                                </span>{" "}
+                                to complete your purchase securely. We do not store any of your payment
+                                information.
                             </p>
                         </div>
 

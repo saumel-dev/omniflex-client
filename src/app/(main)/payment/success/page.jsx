@@ -102,24 +102,50 @@ export default function PaymentSuccessPage() {
                 </p>
 
                 {/* Booking Details */}
+                {/* Booking Details */}
                 {booking && (
-                    <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-6 text-left space-y-2.5">
+                    <div className="rounded-xl border border-orange-200 dark:border-orange-900/40 bg-orange-50 dark:bg-zinc-800/70 p-4 mb-6 text-left space-y-3 transition-colors">
+
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400">Class</span>
-                            <span className="font-bold text-zinc-800 dark:text-zinc-100">{booking.className}</span>
+                            <span className="text-zinc-500 dark:text-zinc-400">
+                                Class
+                            </span>
+
+                            <span className="font-semibold text-zinc-900 dark:text-white text-right">
+                                {booking.className}
+                            </span>
                         </div>
+
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400">Trainer</span>
-                            <span className="font-semibold text-zinc-700 dark:text-zinc-300">{booking.trainerName}</span>
+                            <span className="text-zinc-500 dark:text-zinc-400">
+                                Trainer
+                            </span>
+
+                            <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                                {booking.trainerName}
+                            </span>
                         </div>
+
+                        <div className="border-t border-orange-200 dark:border-zinc-700 pt-3 flex items-center justify-between text-xs">
+                            <span className="text-zinc-500 dark:text-zinc-400">
+                                Amount Paid
+                            </span>
+
+                            <span className="text-lg font-black text-orange-500">
+                                ${booking.price}
+                            </span>
+                        </div>
+
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400">Amount Paid</span>
-                            <span className="font-black text-orange-500">${booking.price}</span>
+                            <span className="text-zinc-500 dark:text-zinc-400">
+                                Transaction ID
+                            </span>
+
+                            <span className="font-mono text-[10px] text-zinc-600 dark:text-zinc-400 truncate max-w-[170px]">
+                                {booking.stripeSessionId}
+                            </span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400">Transaction ID</span>
-                            <span className="font-mono text-[10px] text-zinc-500 dark:text-zinc-400 truncate max-w-[160px]">{booking.stripeSessionId}</span>
-                        </div>
+
                     </div>
                 )}
 
@@ -132,7 +158,7 @@ export default function PaymentSuccessPage() {
                         View My Classes
                     </Link>
                     <Link
-                        href="/classes"
+                        href="/all_classes"
                         className="flex-1 py-2.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-bold rounded-xl transition-colors text-center"
                     >
                         Browse More Classes

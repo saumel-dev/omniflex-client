@@ -1,11 +1,10 @@
-// src/app/dashboard/layout.jsx
+// src/app/dashboard/layout.js
 import { redirect } from "next/navigation";
 import Sidebar from "./_components/Sidebar";
 import DashNavbar from "./_components/DashNavbar";
 import { headers } from "next/headers";
 import { auth } from "@/app/lib/auth";
-import '../globals.css'
-import { Providers } from "@/Components/Providers";
+
 export default async function DashboardLayout({ children }) {
     const session = await auth.api.getSession({
         headers: await headers(),
@@ -18,27 +17,20 @@ export default async function DashboardLayout({ children }) {
     const userRole = (session.user?.role || "USER").toUpperCase();
 
     return (
-        // Add the missing root requirement containers explicitly here
-        <html lang="en">
-            <body className="min-h-screen bg-background text-foreground antialiased">
-                <Providers>
-                    <div className="flex min-h-screen">
-                        {/* SIDEBAR */}
-                        <Sidebar role={userRole} />
+        <div className="flex min-h-screen">
+            {/* SIDEBAR */}
+            <Sidebar role={userRole} />
 
-                        {/* MAIN SCREEN AREA */}
-                        <div className="flex flex-1 flex-col overflow-hidden">
-                            {/* DASHBOARD NAVBAR */}
-                            <DashNavbar user={session.user} />
+            {/* MAIN SCREEN AREA */}
+            <div className="flex flex-1 flex-col overflow-hidden">
+                {/* DASHBOARD NAVBAR */}
+                <DashNavbar user={session.user} />
 
-                            {/* PAGE BODY */}
-                            <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-default-50/30">
-                                {children}
-                            </main>
-                        </div>
-                    </div>
-                </Providers>
-            </body>
-        </html>
+                {/* PAGE BODY */}
+                <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-default-50/30">
+                    {children}
+                </main>
+            </div>
+        </div>
     );
 }
